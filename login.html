@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Login – StudentBrand Hub{% endblock %}
+{% block public_content %}
+<div class="auth-layout">
+  <!-- Brand Panel -->
+  <div class="auth-panel">
+    <div class="auth-logo">Student<span style="background:linear-gradient(135deg,#fff,rgba(255,255,255,.6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Brand</span> Hub</div>
+    <h2>Welcome back,<br>Creator! 👋</h2>
+    <p>Log back in to manage your brand, schedule posts, and track your growth.</p>
+    <ul class="auth-features">
+      <li><i class="fa fa-check"></i> Post Planner & Scheduler</li>
+      <li><i class="fa fa-check"></i> Analytics & Growth Charts</li>
+      <li><i class="fa fa-check"></i> Sales & Revenue Tracker</li>
+      <li><i class="fa fa-check"></i> AI Caption Generator</li>
+    </ul>
+  </div>
+
+  <!-- Form Panel -->
+  <div class="auth-form-panel">
+    <div class="auth-form-inner">
+      <h2>Sign in</h2>
+      <p class="auth-sub">Enter your credentials to access your dashboard</p>
+      <form method="post">
+        <div class="form-group">
+          <label for="email"><i class="fa fa-envelope"></i> Email address</label>
+          <input id="email" type="email" name="email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="password"><i class="fa fa-lock"></i> Password</label>
+          <input id="password" type="password" name="password" placeholder="Your password" required>
+        </div>
+        <button class="btn" type="submit"><i class="fa fa-right-to-bracket"></i> Login</button>
+      </form>
+      <p class="auth-switch">New here? <a href="{{ url_for('register') }}">Create an account →</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

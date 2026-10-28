@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block title %}Sales – StudentBrand Hub{% endblock %}
+{% block page_title %}<i class="fa fa-bag-shopping"></i> Sales Tracker{% endblock %}
+{% block content %}
+
+<!-- Revenue Banner -->
+<div class="greeting-card animate-in">
+  <div>
+    <h2>Total Revenue 💰</h2>
+    <p>Track every order and see which posts drive the most sales.</p>
+  </div>
+  <div class="greeting-badge">
+    <span>₹{{ '%.2f'|format(total) }}</span>
+    <small>All time</small>
+  </div>
+</div>
+
+<!-- Add Product + Record Order -->
+<div class="grid2 animate-in">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon"><i class="fa fa-box"></i></div>
+      <h3>Add Product</h3>
+    </div>
+    <form method="post">
+      <input type="hidden" name="action" value="product">
+      <div class="form-group">
+        <label><i class="fa fa-tag"></i> Product Name</label>
+        <input name="name" placeholder="e.g. Handmade Bracelet" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fa fa-indian-rupee-sign"></i> Price (₹)</label>
+        <input type="number" name="price" min="0" step="0.01" placeholder="0.00" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fa fa-align-left"></i> Description</label>
+        <textarea name="description" rows="2" placeholder="Short description…"></textarea>
+      </div>
+      <button class="btn" type="submit"><i class="fa fa-plus"></i> Add Product</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon"><i class="fa fa-receipt"></i></div>
+      <h3>Record Order</h3>
+    </div>
+    {% if products %}
+    <form method="post">
+      <input type="hidden" name="action" value="order">
+      <div class="form-group">
+        <label><i class="fa fa-box"></i> Product</label>
+        <select name="product_id">{% for p in products %}<option value="{{ p.id }}">{{ p.name }} (₹{{ p.price }})</option>{% endfor %}</select>
+      </div>
+      <div class="row">
+        <div class="form-group">
+          <label><i class="fa fa-hashtag"></i> Quantity</label>
+          <input type="number" name="quantity" min="1" value="1">
+        </div>
+        <div class="form-group">
+          <label><i class="fa fa-calendar"></i> Date</label>
+          <input type="date" name="order_date" value="{{ today }}" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label><i class="fa fa-link"></i> Which post brought this sale? <span class="muted">(optional)</span></label>
+        <select name="post_id">
+          <option value="">-- none --</option>
+          {% for po in posts %}<option value="{{ po.id }}">{{ po.platform }}: {{ po.caption[:35] }}</option>{% endfor %}
+        </select>
+      </div>
+      <button class="btn success-btn" type="submit"><i class="fa fa-floppy-disk"></i> Save Order</button>
+    </form>
+    {% else %}
+    <p class="muted" style="text-align:center;padding:24px 0;">
+      <i class="fa fa-box-open" style="font-size:2rem;display:block;margin-bottom:10px;opacity:.3;"></i>
+      Add a product first to record orders.
+    </p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Charts -->
+<div class="grid2 animate-in">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon"><i class="fa fa-chart-pie"></i></div>
+      <h3>Revenue by Product</h3>
+    </div>
+    <canvas id="salesChart"></canvas>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon"><i class="fa fa-trophy"></i></div>
+      <h3>Best Posts by Sales</h3>
+    </div>
+    {% if by_post %}
+    <table>
+      <thead><tr><th>Post</th><th>Orders</th><th>Revenue</th></tr></thead>
+      <tbody>
+        {% for r in by_post %}
+        <tr>
+          <td><span class="tag {{ r.platform|lower }}">{{ r.platform }}</span> <small>{{ r.cap }}</small></td>
+          <td>{{ r.qty }}</td>
+          <td class="price">₹{{ '%.2f'|format(r.rev) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="muted" style="text-align:center;padding:24px 0;font-size:.85rem;">Link orders to posts to see which content sells.</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Products Table -->
+<div class="card animate-in">
+  <div class="card-header">
+    <div class="card-icon"><i class="fa fa-boxes-stacked"></i></div>
+    <h3>Products</h3>
+  </div>
+  {% if products %}
+  <table>
+    <thead><tr><th>Name</th><th>Price</th><th>Description</th><th></th></tr></thead>
+    <tbody>
+      {% for p in products %}
+      <tr>
+        <td><strong>{{ p.name }}</strong></td>
+        <td class="price">₹{{ p.price }}</td>
+        <td class="muted text-sm">{{ p.description or '—' }}</td>
+        <td>
+          <form method="post" action="{{ url_for('delete_product', pid=p.id) }}" onsubmit="return confirm('Delete product and its orders?')">
+            <button class="btn small danger"><i class="fa fa-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted text-sm">No products yet.</p>
+  {% endif %}
+</div>
+
+<!-- Orders Table -->
+<div class="card animate-in">
+  <div class="card-header">
+    <div class="card-icon"><i class="fa fa-clock-rotate-left"></i></div>
+    <h3>Order History</h3>
+  </div>
+  {% if orders %}
+  <table>
+    <thead><tr><th>Date</th><th>Product</th><th>Qty</th><th>Amount</th><th>From Post</th></tr></thead>
+    <tbody>
+      {% for o in orders %}
+      <tr>
+        <td>{{ o.order_date }}</td>
+        <td><strong>{{ o.pname }}</strong></td>
+        <td>{{ o.quantity }}</td>
+        <td class="price">₹{{ '%.2f'|format(o.price * o.quantity) }}</td>
+        <td>
+          {% if o.platform %}
+          <span class="tag {{ o.platform|lower }}">{{ o.platform }}</span>
+          <small class="muted">{{ o.caption[:30] }}</small>
+          {% else %}—{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted" style="text-align:center;padding:24px 0;">
+    <i class="fa fa-bag-shopping" style="font-size:2rem;display:block;margin-bottom:10px;opacity:.3;"></i>
+    No orders yet.
+  </p>
+  {% endif %}
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>const CHART = {{ chart|tojson }};</script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>drawSales(CHART);</script>
+{% endblock %}

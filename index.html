@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}StudentBrand Hub – Build Your Brand{% endblock %}
+{% block public_content %}
+<!-- Hero -->
+<section class="hero-section">
+  <div class="hero-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+  <div class="hero-content animate-in">
+    <div class="hero-badge"><i class="fa fa-bolt"></i> Free for Student Entrepreneurs</div>
+    <h1>Build your brand.<br>Grow your audience.<br>Make sales.</h1>
+    <p>StudentBrand Hub helps student creators plan content, track social growth, and record every sale — all in one beautiful dashboard.</p>
+    <div class="hero-cta">
+      <a class="btn btn-hero-primary" href="{{ url_for('register') }}"><i class="fa fa-rocket"></i> Get started free</a>
+      <a class="btn btn-hero-ghost" href="{{ url_for('login') }}">Login <i class="fa fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features-section">
+  <div class="section-label"><i class="fa fa-star"></i> Features</div>
+  <h2 class="section-title">Everything you need to grow</h2>
+  <p class="section-sub">From scheduling posts to tracking revenue — StudentBrand Hub has you covered.</p>
+  <div class="feature-grid">
+    <div class="feature-card animate-in">
+      <div class="feature-icon-wrap">📅</div>
+      <h3>Post Planner</h3>
+      <p>Schedule posts for Instagram, LinkedIn and YouTube. Never miss a content deadline again.</p>
+    </div>
+    <div class="feature-card animate-in">
+      <div class="feature-icon-wrap">✨</div>
+      <h3>Caption Generator</h3>
+      <p>Generate engaging captions and hashtags for any product or niche in seconds.</p>
+    </div>
+    <div class="feature-card animate-in">
+      <div class="feature-icon-wrap">📊</div>
+      <h3>Analytics</h3>
+      <p>Track followers, likes and link clicks with beautiful visual charts. Know what works.</p>
+    </div>
+    <div class="feature-card animate-in">
+      <div class="feature-icon-wrap">🛒</div>
+      <h3>Sales Tracker</h3>
+      <p>Record orders, link them to posts, and see exactly which content drives revenue.</p>
+    </div>
+    <div class="feature-card animate-in">
+      <div class="feature-icon-wrap">🌐</div>
+      <h3>Public Brand Page</h3>
+      <p>Share a beautiful public page with your brand story, social links and products.</p>
+    </div>
+    <div class="feature-card animate-in">
+      <div class="feature-icon-wrap">🆓</div>
+      <h3>100% Free</h3>
+      <p>No credit card, no limits. Built specifically for student creators on the go.</p>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="steps-section">
+  <div class="section-label"><i class="fa fa-map"></i> How it works</div>
+  <h2 class="section-title">Up and running in 3 steps</h2>
+  <p class="section-sub">Get your brand dashboard live in under a minute.</p>
+  <div class="steps-grid">
+    <div class="step-card animate-in">
+      <div class="step-number">1</div>
+      <h4>Create your account</h4>
+      <p>Sign up free with just your name, email and a password.</p>
+    </div>
+    <div class="step-card animate-in">
+      <div class="step-number">2</div>
+      <h4>Set up your brand</h4>
+      <p>Add your brand name, niche, bio and social media links.</p>
+    </div>
+    <div class="step-card animate-in">
+      <div class="step-number">3</div>
+      <h4>Start growing</h4>
+      <p>Plan posts, generate captions, log sales and watch your numbers climb.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="landing-footer">
+  StudentBrand Hub &middot; BCA Project &middot; Built with ❤️ for student creators
+</footer>
+{% endblock %}

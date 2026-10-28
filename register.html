@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Sign Up – StudentBrand Hub{% endblock %}
+{% block public_content %}
+<div class="auth-layout">
+  <!-- Brand Panel -->
+  <div class="auth-panel">
+    <div class="auth-logo">Student<span style="background:linear-gradient(135deg,#fff,rgba(255,255,255,.6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Brand</span> Hub</div>
+    <h2>Start your<br>creator journey! 🚀</h2>
+    <p>Join student entrepreneurs who are building their brands and growing their audience.</p>
+    <ul class="auth-features">
+      <li><i class="fa fa-check"></i> Free forever, no credit card</li>
+      <li><i class="fa fa-check"></i> Plan posts across platforms</li>
+      <li><i class="fa fa-check"></i> Track real sales & revenue</li>
+      <li><i class="fa fa-check"></i> Your own public brand page</li>
+    </ul>
+  </div>
+
+  <!-- Form Panel -->
+  <div class="auth-form-panel">
+    <div class="auth-form-inner">
+      <h2>Create account</h2>
+      <p class="auth-sub">It's free and takes less than a minute</p>
+      <form method="post">
+        <div class="form-group">
+          <label for="name"><i class="fa fa-user"></i> Full name</label>
+          <input id="name" name="name" placeholder="Your full name" required>
+        </div>
+        <div class="form-group">
+          <label for="email"><i class="fa fa-envelope"></i> Email address</label>
+          <input id="email" type="email" name="email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="password"><i class="fa fa-lock"></i> Password</label>
+          <input id="password" type="password" name="password" placeholder="Minimum 6 characters" minlength="6" required>
+        </div>
+        <button class="btn" type="submit"><i class="fa fa-rocket"></i> Create account</button>
+      </form>
+      <p class="auth-switch">Already registered? <a href="{{ url_for('login') }}">Login →</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

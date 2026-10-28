@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Brand Profile – StudentBrand Hub{% endblock %}
+{% block page_title %}<i class="fa fa-store"></i> Brand Profile{% endblock %}
+{% block content %}
+
+<div class="card animate-in">
+  <div class="card-header">
+    <div class="card-icon"><i class="fa fa-pen-to-square"></i></div>
+    <h3>Edit Your Brand</h3>
+    {% if g.brand %}<a href="{{ url_for('public_page', slug=g.brand.slug) }}" target="_blank" class="btn small ghost" style="margin-left:auto;"><i class="fa fa-globe"></i> View Public Page</a>{% endif %}
+  </div>
+  <form method="post" enctype="multipart/form-data">
+    <div class="row">
+      <div class="form-group">
+        <label><i class="fa fa-star"></i> Brand Name *</label>
+        <input name="brand_name" value="{{ g.brand.brand_name if g.brand else '' }}" placeholder="e.g. Priya's Creations" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fa fa-tag"></i> Niche</label>
+        <input name="niche" value="{{ g.brand.niche or '' if g.brand else '' }}" placeholder="e.g. handmade jewelry">
+      </div>
+    </div>
+    <div class="form-group">
+      <label><i class="fa fa-align-left"></i> Bio</label>
+      <textarea name="bio" rows="3" placeholder="Tell customers about your brand…">{{ g.brand.bio or '' if g.brand else '' }}</textarea>
+    </div>
+    <div class="form-group">
+      <label><i class="fa fa-image"></i> Logo <span class="muted">(png/jpg/webp, max 2MB)</span></label>
+      {% if g.brand and g.brand.logo %}<img class="logo-preview" src="{{ url_for('static', filename='uploads/' + g.brand.logo) }}" alt="logo">{% endif %}
+      <input type="file" name="logo" accept="image/*">
+    </div>
+
+    <div style="border-top:1px solid var(--border);margin:20px 0 16px;padding-top:16px;">
+      <label style="margin-bottom:14px;font-size:.9rem;"><i class="fa fa-share-nodes"></i> Social Media Links</label>
+      <div class="row">
+        <div class="form-group">
+          <label><i class="fa-brands fa-instagram" style="color:#e1306c;"></i> Instagram</label>
+          <input name="instagram" value="{{ g.brand.instagram or '' if g.brand else '' }}" placeholder="https://instagram.com/...">
+        </div>
+        <div class="form-group">
+          <label><i class="fa-brands fa-linkedin" style="color:#0a66c2;"></i> LinkedIn</label>
+          <input name="linkedin" value="{{ g.brand.linkedin or '' if g.brand else '' }}" placeholder="https://linkedin.com/in/...">
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group">
+          <label><i class="fa-brands fa-youtube" style="color:#ff0000;"></i> YouTube</label>
+          <input name="youtube" value="{{ g.brand.youtube or '' if g.brand else '' }}" placeholder="https://youtube.com/...">
+        </div>
+        <div class="form-group">
+          <label><i class="fa fa-globe"></i> Website</label>
+          <input name="website" value="{{ g.brand.website or '' if g.brand else '' }}" placeholder="https://yoursite.com">
+        </div>
+      </div>
+    </div>
+
+    <button class="btn" type="submit"><i class="fa fa-floppy-disk"></i> Save Profile</button>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Analytics – StudentBrand Hub{% endblock %}
+{% block page_title %}<i class="fa fa-chart-line"></i> Analytics{% endblock %}
+{% block content %}
+
+<!-- Log Entry Form -->
+<div class="card animate-in">
+  <div class="card-header">
+    <div class="card-icon"><i class="fa fa-plus"></i></div>
+    <h3>Log Today's Numbers</h3>
+  </div>
+  <form method="post">
+    <div class="row">
+      <div class="form-group">
+        <label><i class="fa fa-share-nodes"></i> Platform</label>
+        <select name="platform">{% for p in platforms %}<option>{{ p }}</option>{% endfor %}</select>
+      </div>
+      <div class="form-group">
+        <label><i class="fa fa-calendar"></i> Date</label>
+        <input type="date" name="record_date" value="{{ today }}" required>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group">
+        <label><i class="fa fa-users"></i> Followers</label>
+        <input type="number" name="followers" min="0" value="0" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label><i class="fa fa-heart"></i> Likes</label>
+        <input type="number" name="likes" min="0" value="0" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label><i class="fa fa-arrow-pointer"></i> Link Clicks</label>
+        <input type="number" name="clicks" min="0" value="0" placeholder="0">
+      </div>
+    </div>
+    <button class="btn" type="submit"><i class="fa fa-floppy-disk"></i> Save Entry</button>
+  </form>
+</div>
+
+<!-- Charts -->
+<div class="grid2 animate-in">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon"><i class="fa fa-users"></i></div>
+      <h3>Follower Growth</h3>
+    </div>
+    <canvas id="followersChart"></canvas>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon"><i class="fa fa-fire"></i></div>
+      <h3>Likes &amp; Clicks by Platform</h3>
+    </div>
+    <canvas id="engageChart"></canvas>
+  </div>
+</div>
+
+<!-- History Table -->
+<div class="card animate-in">
+  <div class="card-header">
+    <div class="card-icon"><i class="fa fa-clock-rotate-left"></i></div>
+    <h3>History</h3>
+  </div>
+  {% if rows %}
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Platform</th><th>Followers</th><th>Likes</th><th>Clicks</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        <td>{{ r.record_date }}</td>
+        <td><span class="tag {{ r.platform|lower }}">{{ r.platform }}</span></td>
+        <td>{{ r.followers }}</td>
+        <td>{{ r.likes }}</td>
+        <td>{{ r.clicks }}</td>
+        <td>
+          <form method="post" action="{{ url_for('delete_metric', mid=r.id) }}">
+            <button class="btn small danger"><i class="fa fa-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted" style="text-align:center;padding:24px 0;">
+    <i class="fa fa-chart-simple" style="font-size:2rem;display:block;margin-bottom:10px;opacity:.3;"></i>
+    No data yet. Add your first entry above.
+  </p>
+  {% endif %}
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>const CHART = {{ chart|tojson }};</script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>drawAnalytics(CHART);</script>
+{% endblock %}

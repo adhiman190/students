@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Caption Generator – StudentBrand Hub{% endblock %}
+{% block page_title %}<i class="fa fa-wand-magic-sparkles"></i> Caption Generator{% endblock %}
+{% block content %}
+
+<div class="card animate-in">
+  <div class="card-header">
+    <div class="card-icon"><i class="fa fa-wand-magic-sparkles"></i></div>
+    <h3>Generate Caption &amp; Hashtags</h3>
+  </div>
+  <form method="post">
+    <div class="row">
+      <div class="form-group">
+        <label><i class="fa fa-box"></i> Product / Topic</label>
+        <input name="product" placeholder="e.g. handmade bracelet" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fa fa-tag"></i> Niche</label>
+        <input name="niche" placeholder="e.g. jewelry">
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group">
+        <label><i class="fa fa-face-smile"></i> Tone</label>
+        <select name="tone">
+          <option value="friendly">😊 Friendly</option>
+          <option value="professional">💼 Professional</option>
+          <option value="promo">🔥 Promotional</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label><i class="fa fa-share-nodes"></i> Platform</label>
+        <select name="platform">{% for p in platforms %}<option>{{ p }}</option>{% endfor %}</select>
+      </div>
+    </div>
+    <button class="btn" type="submit"><i class="fa fa-bolt"></i> Generate Caption</button>
+  </form>
+</div>
+
+{% if result %}
+<div class="card animate-in">
+  <div class="card-header">
+    <div class="card-icon"><i class="fa fa-comment-dots"></i></div>
+    <h3>Your Caption – <span class="tag {{ result.platform|lower }}">{{ result.platform }}</span></h3>
+    <button class="btn small ghost" onclick="copyText()" style="margin-left:auto;"><i class="fa fa-copy"></i> Copy all</button>
+  </div>
+  <div style="margin-bottom:12px;">
+    <label style="margin-bottom:8px;">Caption</label>
+    <p id="gen-caption" class="result">{{ result.caption }}</p>
+  </div>
+  <div>
+    <label style="margin-bottom:8px;">Hashtags</label>
+    <p id="gen-tags" class="result" style="color:var(--primary);font-weight:500;">{{ result.hashtags }}</p>
+  </div>
+  <p class="muted text-sm mt-12">Not happy? Hit Generate again for a new version.</p>
+</div>
+{% endif %}
+
+{% endblock %}
+{% block scripts %}
+<script>
+function copyText() {
+  const caption = document.getElementById('gen-caption').innerText;
+  const tags = document.getElementById('gen-tags').innerText;
+  navigator.clipboard.writeText(caption + '\n\n' + tags).then(() => {
+    const btn = document.querySelector('[onclick="copyText()"]');
+    btn.innerHTML = '<i class="fa fa-check"></i> Copied!';
+    setTimeout(() => { btn.innerHTML = '<i class="fa fa-copy"></i> Copy all'; }, 2000);
+  });
+}
+</script>
+{% endblock %}

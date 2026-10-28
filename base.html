@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}StudentBrand Hub{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="{{ 'app-layout' if g.user else 'public-layout' }}">
+
+{% if g.user %}
+<button class="hamburger" id="hamburgerBtn" aria-label="Menu"><i class="fa fa-bars"></i></button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">Student<span>Brand</span> Hub</div>
+    <div class="logo-sub">Creator Dashboard</div>
+  </div>
+  <nav class="nav-section">
+    <div class="nav-label">Main</div>
+    <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}"><i class="fa fa-gauge"></i> Dashboard</a>
+    <a href="{{ url_for('profile') }}"   class="nav-link {% if request.endpoint == 'profile'   %}active{% endif %}"><i class="fa fa-store"></i> Brand Profile</a>
+    <div class="nav-label">Content</div>
+    <a href="{{ url_for('planner') }}"   class="nav-link {% if request.endpoint == 'planner'   %}active{% endif %}"><i class="fa fa-calendar-days"></i> Post Planner</a>
+    <a href="{{ url_for('generator') }}" class="nav-link {% if request.endpoint == 'generator' %}active{% endif %}"><i class="fa fa-wand-magic-sparkles"></i> Caption Gen</a>
+    <div class="nav-label">Growth</div>
+    <a href="{{ url_for('analytics') }}" class="nav-link {% if request.endpoint == 'analytics' %}active{% endif %}"><i class="fa fa-chart-line"></i> Analytics</a>
+    <a href="{{ url_for('sales') }}"     class="nav-link {% if request.endpoint == 'sales'     %}active{% endif %}"><i class="fa fa-bag-shopping"></i> Sales</a>
+    {% if g.brand %}<a href="{{ url_for('public_page', slug=g.brand.slug) }}" target="_blank" class="nav-link"><i class="fa fa-globe"></i> Public Page <i class="fa fa-arrow-up-right-from-square" style="font-size:.6rem;margin-left:auto;"></i></a>{% endif %}
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-avatar">{{ g.user.name[0]|upper }}</div>
+    <div class="user-info">
+      <div class="user-name">{{ g.user.name.split(' ')[0] }}</div>
+      <div class="user-role">Student Creator</div>
+    </div>
+    <a href="{{ url_for('logout') }}" class="sidebar-logout" title="Logout"><i class="fa fa-right-from-bracket"></i></a>
+  </div>
+</aside>
+<div class="main-wrap">
+  <header class="top-bar">
+    <div class="top-bar-title">{% block page_title %}{% endblock %}</div>
+    <div class="top-bar-actions">{% block top_actions %}{% endblock %}</div>
+  </header>
+  <main class="container animate-in">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}<div class="flash {{ cat }}"><i class="fa fa-circle-info"></i> {{ msg }}</div>{% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer">StudentBrand Hub &middot; BCA Project</footer>
+</div>
+{% else %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% for cat, msg in messages %}
+  <div style="position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:999;min-width:300px;max-width:90%;">
+    <div class="flash {{ cat }}"><i class="fa fa-circle-info"></i> {{ msg }}</div>
+  </div>
+  {% endfor %}
+{% endwith %}
+{% block public_content %}{% endblock %}
+{% endif %}
+
+{% block scripts %}{% endblock %}
+<script>
+(function(){
+  const btn=document.getElementById('hamburgerBtn'),sidebar=document.getElementById('sidebar'),overlay=document.getElementById('sidebarOverlay');
+  if(btn){
+    btn.addEventListener('click',()=>{sidebar.classList.toggle('open');overlay.classList.toggle('open');});
+    overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('open');});
+  }
+  document.querySelectorAll('.stat span[data-count]').forEach(el=>{
+    const target=parseFloat(el.dataset.count),isFloat=el.dataset.float==='1',prefix=el.dataset.prefix||'';
+    let cur=0,steps=50,inc=target/steps,s=0;
+    const t=setInterval(()=>{s++;cur+=inc;if(s>=steps){cur=target;clearInterval(t);}el.textContent=prefix+(isFloat?cur.toFixed(2):Math.floor(cur));},900/steps);
+  });
+})();
+</script>
+</body>
+</html>

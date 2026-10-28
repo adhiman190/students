@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ b.brand_name }} – StudentBrand Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="public">
+  <header class="public-head">
+    {% if b.logo %}<img class="public-logo" src="{{ url_for('static', filename='uploads/' + b.logo) }}" alt="logo">{%
+    endif %}
+    <h1>{{ b.brand_name }}</h1>
+    {% if b.niche %}<p class="niche">{{ b.niche }}</p>{% endif %}
+    <p>{{ b.bio or '' }}</p>
+    <div class="social">
+      {% for label, link in [('Instagram', b.instagram), ('LinkedIn', b.linkedin), ('YouTube', b.youtube), ('Website',
+      b.website)] %}
+      {% if link %}<a class="btn small" href="{{ link }}" target="_blank" rel="noopener">{{ label }}</a>{% endif %}
+      {% endfor %}
+    </div>
+  </header>
+  <main class="container">
+    <h2>Products</h2>
+    <div class="grid3">
+      {% for p in products %}
+      <div class="card">
+        <h3>{{ p.name }}</h3>
+        <p>{{ p.description }}</p>
+        <p class="price">&#8377;{{ p.price }}</p>
+      </div>
+      {% else %}<p class="muted">No products yet. Check back soon!</p>{% endfor %}
+    </div>
+  </main>
+  <footer class="footer">Powered by StudentBrand Hub</footer>
+</body>
+
+</html>

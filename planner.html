@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Post Planner – StudentBrand Hub{% endblock %}
+{% block page_title %}<i class="fa fa-calendar-days"></i> Post Planner{% endblock %}
+{% block content %}
+
+<!-- New Post Form -->
+<div class="card animate-in">
+  <div class="card-header">
+    <div class="card-icon"><i class="fa fa-plus"></i></div>
+    <h3>Schedule a New Post</h3>
+  </div>
+  <form method="post">
+    <div class="row">
+      <div class="form-group">
+        <label><i class="fa fa-share-nodes"></i> Platform</label>
+        <select name="platform">{% for p in platforms %}<option>{{ p }}</option>{% endfor %}</select>
+      </div>
+      <div class="form-group">
+        <label><i class="fa fa-calendar"></i> Scheduled Date</label>
+        <input type="date" name="scheduled_date" value="{{ today }}" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label><i class="fa fa-align-left"></i> Caption</label>
+      <textarea name="caption" rows="3" placeholder="Write your post caption here…" required id="caption"></textarea>
+    </div>
+    <div class="form-group">
+      <label><i class="fa fa-hashtag"></i> Hashtags</label>
+      <input name="hashtags" placeholder="#studentbrand #handmade" id="hashtags">
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <button class="btn" type="submit"><i class="fa fa-paper-plane"></i> Schedule Post</button>
+      <a href="{{ url_for('generator') }}" class="btn ghost small"><i class="fa fa-wand-magic-sparkles"></i> Need a caption?</a>
+    </div>
+  </form>
+</div>
+
+<!-- Posts List -->
+<div class="card animate-in">
+  <div class="card-header">
+    <div class="card-icon"><i class="fa fa-list"></i></div>
+    <h3>Your Posts</h3>
+  </div>
+  <div class="filters">
+    <strong>Filter:</strong>
+    <a href="{{ url_for('planner') }}" class="{{ '' if flt else 'active' }}">All</a>
+    {% for p in platforms %}
+    <a href="{{ url_for('planner', platform=p) }}" class="{{ 'active' if flt == p else '' }}">{{ p }}</a>
+    {% endfor %}
+  </div>
+  {% if posts %}
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Platform</th><th>Caption</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for p in posts %}
+      <tr>
+        <td style="white-space:nowrap;">{{ p.scheduled_date }}</td>
+        <td><span class="tag {{ p.platform|lower }}">{{ p.platform }}</span></td>
+        <td>
+          <div style="font-size:.88rem;">{{ p.caption }}</div>
+          {% if p.hashtags %}<small class="muted">{{ p.hashtags }}</small>{% endif %}
+        </td>
+        <td><span class="status {{ p.status }}">{{ p.status }}</span></td>
+        <td>
+          <div class="actions">
+            <form method="post" action="{{ url_for('toggle_post', pid=p.id) }}">
+              <button class="btn small ghost" title="{{ 'Mark as posted' if p.status == 'scheduled' else 'Reschedule' }}">
+                <i class="fa {{ 'fa-check' if p.status == 'scheduled' else 'fa-rotate-left' }}"></i>
+              </button>
+            </form>
+            <form method="post" action="{{ url_for('delete_post', pid=p.id) }}" onsubmit="return confirm('Delete this post?')">
+              <button class="btn small danger" title="Delete">
+                <i class="fa fa-trash"></i>
+              </button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted" style="text-align:center;padding:24px 0;">
+    <i class="fa fa-inbox" style="font-size:2rem;display:block;margin-bottom:10px;opacity:.3;"></i>
+    No posts yet. Schedule your first one above!
+  </p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Dashboard – StudentBrand Hub{% endblock %}
+{% block page_title %}<i class="fa fa-gauge"></i> Dashboard{% endblock %}
+{% block content %}
+
+<!-- Greeting Card -->
+<div class="greeting-card animate-in">
+  <div>
+    <h2>Hello, {{ g.user.name.split(' ')[0] }}! 👋</h2>
+    <p>Here's what's happening with your brand today.</p>
+  </div>
+  {% if g.brand %}
+  <div class="greeting-badge">
+    <span>{{ g.brand.brand_name[:12] }}</span>
+    <small>{{ g.brand.niche or 'Your Niche' }}</small>
+  </div>
+  {% endif %}
+</div>
+
+{% if not g.brand %}
+<div class="flash info"><i class="fa fa-circle-info"></i> You haven't set up your brand yet. <a href="{{ url_for('profile') }}"><strong>Create your brand profile →</strong></a></div>
+{% endif %}
+
+<!-- Stats -->
+<div class="stats">
+  <div class="stat animate-in">
+    <span class="stat-icon">📝</span>
+    <span data-count="{{ stats.posts }}">0</span>
+    <small>Total Posts</small>
+  </div>
+  <div class="stat animate-in">
+    <span class="stat-icon">🗓️</span>
+    <span data-count="{{ stats.scheduled }}">0</span>
+    <small>Scheduled</small>
+  </div>
+  <div class="stat animate-in">
+    <span class="stat-icon">👥</span>
+    <span data-count="{{ stats.followers }}">0</span>
+    <small>Followers</small>
+  </div>
+  <div class="stat animate-in">
+    <span class="stat-icon">🛒</span>
+    <span data-count="{{ stats.orders }}">0</span>
+    <small>Orders</small>
+  </div>
+  <div class="stat animate-in">
+    <span class="stat-icon">💰</span>
+    <span data-count="{{ '%.2f'|format(stats.revenue) }}" data-float="1" data-prefix="₹">₹0</span>
+    <small>Revenue</small>
+  </div>
+</div>
+
+<!-- Upcoming Posts -->
+<div class="card animate-in">
+  <div class="card-header">
+    <div class="card-icon"><i class="fa fa-calendar-days"></i></div>
+    <h3>Upcoming Posts</h3>
+    <a href="{{ url_for('planner') }}" class="btn small ghost" style="margin-left:auto;"><i class="fa fa-plus"></i> Add Post</a>
+  </div>
+  {% if upcoming %}
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Platform</th><th>Caption</th></tr>
+    </thead>
+    <tbody>
+      {% for p in upcoming %}
+      <tr>
+        <td><i class="fa fa-clock" style="color:var(--muted);margin-right:6px;font-size:.8rem;"></i>{{ p.scheduled_date }}</td>
+        <td><span class="tag {{ p.platform|lower }}">{{ p.platform }}</span></td>
+        <td style="max-width:320px;">{{ p.caption[:80] }}{% if p.caption|length > 80 %}…{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted" style="text-align:center;padding:24px 0;">
+    <i class="fa fa-calendar-xmark" style="font-size:2rem;display:block;margin-bottom:10px;opacity:.3;"></i>
+    No upcoming posts. <a href="{{ url_for('planner') }}">Plan one now →</a>
+  </p>
+  {% endif %}
+</div>
+
+{% endblock %}
